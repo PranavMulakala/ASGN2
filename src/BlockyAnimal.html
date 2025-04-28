@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Blocky Animal: Turtle</title>
+  <style>
+    #outerContainer { display: flex; align-items: flex-start; }
+    #webgl          { border:1px solid black; background:#000; }
+    #controls       { margin-left: 16px; }
+  </style>
+</head>
+
+<body onload="main()">
+  <div id="outerContainer">
+    <!-- WebGL Canvas -->
+    <canvas id="webgl" width="800" height="600">
+      Your browser does not support canvas.
+    </canvas>
+    
+    <!-- Controls Panel -->
+    <div id="controls">
+      <h3>Turtle Controls</h3>
+      <!-- Body part sliders -->
+      <div>
+        <p>Head: <input type="range" id="neckSlider" min="-45" max="45" value="0"></p>
+        <p>Tail: <input type="range" id="tailSlider" min="-45" max="45" value="0"></p>
+        
+        <label>Legs: <input id="legSlider" type="range" min="-45" max="45" value="0"></label>
+        <label>Knees: <input id="kneeSlider" type="range" min="-45" max="45" value="0"></label>
+        <label>Feet: <input id="footSlider" type="range" min="-45" max="45" value="0"></label>
+
+      </div>
+      
+      <!-- Animation toggle -->
+      <p>
+        <button id="animOnBtn">Start Animation</button>
+        <button id="animOffBtn">Stop Animation</button>
+      </p>
+      
+      <!-- Performance info -->
+      <p id="numdot" style="font-family:monospace;"></p>
+    </div>
+  </div>
+
+  <script src="../lib/cuon-matrix.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="Cube.js"></script>
+  <script src="SharedState.js"></script>
+  <script src="Sphere.js"></script> 
+  <script src="Render.js"></script>
+  <script src="BlockyAnimal.js"></script>
+  <script src="Hemisphere.js"></script>
+</body>
+</html>
