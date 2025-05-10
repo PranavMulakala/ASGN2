@@ -4,10 +4,13 @@
 // Vertex shader: applies global rotation then model transform
 const VSHADER_SOURCE = `
   attribute vec4 a_Position;
+  attribute vec2 a_TexCoord; 
   uniform mat4 u_GlobalRotateMatrix;
   uniform mat4 u_ModelMatrix;
+  varying   vec2 v_TexCoord;
   void main() {
     gl_Position = u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
+    v_TexCoord  = a_TexCoord;
   }
 `;
 
@@ -15,12 +18,14 @@ const VSHADER_SOURCE = `
 const FSHADER_SOURCE = `
   precision mediump float;
   uniform vec4 u_Color;
+  varying vec2  v_TexCoord; 
   void main() {
     gl_FragColor = u_Color;
   }
 `;
 
 let gl;
+let a_TexCoord; 
 let u_GlobalRotateMatrix, u_ModelMatrix, u_Color;
 
 // Turtle joint and mouse angles (degrees)
@@ -61,6 +66,10 @@ function initShadersAndLocations() {
   u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix');
   u_ModelMatrix        = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
   u_Color              = gl.getUniformLocation(gl.program, 'u_Color');
+
+  a_TexCoord = gl.getAttribLocation(gl.program, 'a_TexCoord');
+  if (a_TexCoord < 0) throw 'Failed to get the storage location of a_TexCoord';
+  gl.enableVertexAttribArray(a_TexCoord);
 }
 
 function addUIActions() {
