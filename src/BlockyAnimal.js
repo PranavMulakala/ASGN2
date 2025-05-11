@@ -18,9 +18,10 @@ const VSHADER_SOURCE = `
 const FSHADER_SOURCE = `
   precision mediump float;
   uniform vec4 u_Color;
+  uniform sampler2D u_Sampler;
   varying vec2  v_TexCoord; 
   void main() {
-    gl_FragColor = u_Color;
+    gl_FragColor = texture2D(u_Sampler, v_TexCoord);
   }
 `;
 
@@ -70,6 +71,43 @@ function initShadersAndLocations() {
   a_TexCoord = gl.getAttribLocation(gl.program, 'a_TexCoord');
   if (a_TexCoord < 0) throw 'Failed to get the storage location of a_TexCoord';
   gl.enableVertexAttribArray(a_TexCoord);
+}
+
+function initTextures(gl) {
+  // 1) create the texture handle
+  const texture = gl.createTexture();
+  if (!texture) {
+    console.error('Failed to create WebGL texture object');
+    return false;
+  }
+
+  // 2) get the sampler uniform location
+  const u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
+  if (u_Sampler < 0) {
+    console.error('Failed to get the storage location of u_Sampler');
+    return false;
+  }
+
+  // 3) load the image
+  const image = new Image();
+  image.onload = () => loadTexture(gl, texture, u_Sampler, image);
+  image.src = 'sky.jpg';      // ← make sure sky.jpg sits next to your HTML or adjust the path
+
+  return true;
+}
+
+function loadTexture(gl, texture, u_Sampler, image) {
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);       // flip the image’s Y
+  gl.activeTexture(gl.TEXTURE0);                   // select texture unit 0
+  gl.bindTexture(gl.TEXTURE_2D, texture);          // bind our texture object
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texImage2D(
+    gl.TEXTURE_2D, 0,
+    gl.RGBA, gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    image
+  );
+  gl.uniform1i(u_Sampler, 0);                      // tell the shader u_Sampler uses TEXTURE0
 }
 
 function addUIActions() {
@@ -179,6 +217,9 @@ function updateAnimationAngles() {
 function main() {
   setupWebGL();
   initShadersAndLocations();
+  if (!initTextures(gl)) {
+    throw 'Failed to initialize textures';
+  }
   initCubeBuffer();            
   addUIActions();
   initSphereBuffer();
