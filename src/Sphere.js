@@ -49,9 +49,12 @@ function drawSphere(M, color) {
   initSphereBuffer();
 
   gl.bindBuffer(gl.ARRAY_BUFFER, sphereBuffer);
-  const a_Position = gl.getAttribLocation(gl.program, 'a_Position');
   gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(a_Position);
+
+  if (typeof a_TexCoord !== 'undefined' && a_TexCoord !== -1) {
+    gl.disableVertexAttribArray(a_TexCoord);
+  }
 
   gl.uniformMatrix4fv(u_ModelMatrix, false, M.elements);
   gl.uniform4fv(u_Color, color);
