@@ -82,12 +82,6 @@ function drawCube(M, color) {
     gl.vertexAttribPointer(a_TexCoord_loc, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(a_TexCoord_loc);
   } else {
-    // If a_TexCoord is not available (e.g., shader doesn't use it),
-    // ensure it's disabled if it might have been enabled globally.
-    // This case is less likely for the skybox which needs texturing.
-    // The global a_TexCoord might still be enabled from initShadersAndLocations.
-    // To be absolutely safe, one could disable an attribute if its location is -1.
-    // However, the main shaders DO use a_TexCoord.
   }
 
   gl.uniformMatrix4fv(u_ModelMatrix_loc, false, M.elements);
@@ -95,12 +89,6 @@ function drawCube(M, color) {
 
   gl.drawArrays(gl.TRIANGLES, 0, 36);
 
-  // Optional: If you want to be super clean and this cube might be the last thing
-  // using a_TexCoord before something that *doesn't* want it, you could disable it.
-  // But typically, the next draw call will manage its own attributes.
-  // if (a_TexCoord_loc !== -1) {
-  //   gl.disableVertexAttribArray(a_TexCoord_loc);
-  // }
 }
 window.initCubeBuffer = initCubeBuffer; // Assuming these are intended to be global
 window.drawCube       = drawCube;
